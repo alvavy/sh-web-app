@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_DIR="/mnt/tank/appdata/sh-web-app"
+APP_DIR="/mnt/sh_pool/appdata/sh-web-app"
 BRANCH="main"
 
 cd "$APP_DIR" || exit 1
