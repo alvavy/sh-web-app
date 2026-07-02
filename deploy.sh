@@ -10,7 +10,7 @@ git fetch origin "$BRANCH"
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse "origin/$BRANCH")
 
-if ["$LOCAL" = "$REMOTE" ]; then
+if [ "$LOCAL" = "$REMOTE" ]; then
   echo "$(date): No changes. Skip deploy."
   exit 0
 fi
