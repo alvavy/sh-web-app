@@ -1,0 +1,7 @@
+services:
+  sh-web-app:
+    build: .
+    container_name: sh-web-app
+    restart: unless-stopped
+    ports:
+      - "9000:8501"
