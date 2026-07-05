@@ -323,12 +323,12 @@ elif st.session_state.current_screen == "schedule_view":
             df = pd.DataFrame(columns=["Day", "Time", "Activity", "Location", "Budget", "Memo"])
             
         column_config = {
-            "Day": st.column_config.TextColumn("일차", width="small", placeholder="Day 1", required=True),
+            "Day": st.column_config.TextColumn("일차", width="small", required=True),
             "Time": st.column_config.SelectboxColumn("시간대", options=["오전", "점심", "오후", "저녁"], width="small", required=True),
-            "Activity": st.column_config.TextColumn("활동 내용", width="large", placeholder="활동 상세 입력", required=True),
-            "Location": st.column_config.TextColumn("장소/위치", width="medium", placeholder="위치"),
-            "Budget": st.column_config.TextColumn("비용", width="small", placeholder="예: 무료"),
-            "Memo": st.column_config.TextColumn("메모/팁", width="medium", placeholder="팁")
+            "Activity": st.column_config.TextColumn("활동 내용", width="large", required=True),
+            "Location": st.column_config.TextColumn("장소/위치", width="medium"),
+            "Budget": st.column_config.TextColumn("비용", width="small"),
+            "Memo": st.column_config.TextColumn("메모/팁", width="medium")
         }
         
         # 데이터 에디터 바인딩
