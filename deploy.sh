@@ -1,5 +1,12 @@
 #!/bin/bash
 
+set -x
+
+echo "===== $(date) ====="
+echo "USER=$(whoami)"
+echo "PWD=$(pwd)"
+echo "PATH=$PATH"
+
 # 환경 변수 추가 (Cron이 git과 docker 명령어를 찾을 수 있게 함)
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
