@@ -422,7 +422,7 @@ elif st.session_state.current_screen == "settings":
         with col_b2:
             btn_save = st.form_submit_button("💾 설정 저장하기", type="primary", use_container_width=True)
             if btn_save:
-new_settings = {
+        new_settings = {
                     "api_key": api_key_input.strip(),
                     "model": selected_model_input,
                     "temperature": settings.get("temperature", 0.7)
