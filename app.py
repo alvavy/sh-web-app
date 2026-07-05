@@ -106,7 +106,7 @@ if st.session_state.current_screen == "home":
         
         # 버튼을 이쁘게 배치
         st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
-        if st.button("➕ 새로운 여행 계획하기", type="primary", use_container_width=True, size="large"):
+        if st.button("➕ 새로운 여행 계획하기", type="primary", use_container_width=True):
             # 위저드 데이터 초기화
             st.session_state.wizard_data = {
                 "trip_name": "",
