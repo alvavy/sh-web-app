@@ -1,7 +1,11 @@
 import streamlit as st
 import pandas as pd
 from datetime import date, datetime, timedelta
-from config.settings_manager import load_settings, save_settings
+from config.settings_manager import (
+    load_settings,
+    save_settings,
+    AVAILABLE_MODELS
+)
 from storage.trip_storage import save_trip, load_trip, delete_trip, list_trips
 from services.gemini_service import test_connection, generate_schedule, modify_schedule
 
@@ -245,9 +249,7 @@ elif st.session_state.current_screen == "wizard":
                             metadata_for_api["end_date"] = str(metadata_for_api["end_date"])
                             
                             success, result = generate_schedule(
-                                metadata_for_api, 
-                                api_key, 
-                                settings.get("selected_model", "gemini-1.5-flash")
+                                metadata_for_api
                             )
                             
                             if success:
@@ -373,9 +375,7 @@ elif st.session_state.current_screen == "schedule_view":
                         
                         success, result = modify_schedule(
                             current_schedule,
-                            mod_request,
-                            api_key,
-                            settings.get("selected_model", "gemini-1.5-flash")
+                            mod_request
                         )
                         
                         if success:
@@ -399,8 +399,8 @@ elif st.session_state.current_screen == "settings":
         )
         
         # 모델 선택
-        model_options = settings.get("available_models", ["gemini-1.5-flash", "gemini-1.5-pro"])
-        current_model = settings.get("selected_model", "gemini-1.5-flash")
+        model_options = AVAILABLE_MODELS
+        current_model = settings.get("model", "gemini-3.5-flash")
         
         # 인덱스 계산
         try:
@@ -422,10 +422,10 @@ elif st.session_state.current_screen == "settings":
         with col_b2:
             btn_save = st.form_submit_button("💾 설정 저장하기", type="primary", use_container_width=True)
             if btn_save:
-                new_settings = {
+new_settings = {
                     "api_key": api_key_input.strip(),
-                    "selected_model": selected_model_input,
-                    "available_models": model_options
+                    "model": selected_model_input,
+                    "temperature": settings.get("temperature", 0.7)
                 }
                 if save_settings(new_settings):
                     st.session_state.settings = new_settings
@@ -445,7 +445,7 @@ elif st.session_state.current_screen == "settings":
                 st.error("API Key가 존재하지 않습니다. 먼저 API Key를 저장한 후 테스트를 시도하세요.")
             else:
                 with st.spinner("Gemini API 서버에 요청을 전송하고 테스트하는 중..."):
-                    test_success, test_msg = test_connection(api_key, settings.get("selected_model", "gemini-1.5-flash"))
+                    test_success, test_msg = test_connection()
                     if test_success:
                         st.success(test_msg)
                     else:

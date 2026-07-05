@@ -3,6 +3,8 @@ import re
 import json
 import google.generativeai as genai
 
+from config.settings_manager import load_settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROMPT_FILE = os.path.join(BASE_DIR, "prompts", "default_prompt.md")
 
@@ -48,25 +50,42 @@ def extract_json_array(text):
     except json.JSONDecodeError as e:
         return False, f"JSON 파싱에 실패했습니다: {str(e)}\n추출 데이터: {json_str[:200]}"
 
-def test_connection(api_key, model_name="gemini-1.5-flash"):
-    """Google Gemini API 연결 상태를 테스트합니다."""
+def test_connection():
+    """settings.json의 설정으로 Gemini 연결을 테스트합니다."""
+
+    settings = load_settings()
+
+    api_key = settings["api_key"]
+    model_name = settings["model"]
+
     if not api_key:
         return False, "API Key가 설정되어 있지 않습니다."
+
     try:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(model_name)
-        # 매우 단순한 쿼리로 응답 테스트
-        response = model.generate_content("Hello. Reply with 'OK' only.")
-        if response and response.text:
-            return True, "연결에 성공했습니다!"
-        return False, "응답이 비어 있습니다."
-    except Exception as e:
-        return False, f"연결 테스트 실패: {str(e)}"
 
-def generate_schedule(metadata, api_key, model_name="gemini-1.5-flash"):
+        response = model.generate_content(
+            "Reply with OK only."
+        )
+
+        if response and response.text:
+            return True, "연결 성공"
+
+        return False, "응답이 없습니다."
+
+    except Exception as e:
+        return False, str(e)
+
+def generate_schedule(metadata):
     """사용자가 입력한 정보를 바탕으로 Gemini API를 호출하여 새로운 일정을 생성합니다."""
+    settings = load_settings()
+
+    api_key = settings["api_key"]
+    model_name = settings["model"]
+
     if not api_key:
-        return False, "API Key가 누락되었습니다. 설정 화면에서 API Key를 입력해주세요."
+        return False, "API Key가 설정되지 않았습니다."
         
     prompt_template = load_default_prompt()
     
@@ -92,7 +111,9 @@ def generate_schedule(metadata, api_key, model_name="gemini-1.5-flash"):
         
         response = model.generate_content(
             full_prompt,
-            generation_config={"temperature": 0.3}
+            generation_config={
+                "temperature": settings["temperature"]
+            }
         )
         
         if not response or not response.text:
@@ -107,10 +128,15 @@ def generate_schedule(metadata, api_key, model_name="gemini-1.5-flash"):
     except Exception as e:
         return False, f"Gemini API 호출 오류: {str(e)}"
 
-def modify_schedule(existing_schedule, modification_request, api_key, model_name="gemini-1.5-flash"):
+def modify_schedule(existing_schedule, modification_request):
     """기존 일정과 사용자의 요구사항을 바탕으로 Gemini API를 호출하여 일정을 부분 수정합니다."""
+    settings = load_settings()
+
+    api_key = settings["api_key"]
+    model_name = settings["model"]
+
     if not api_key:
-        return False, "API Key가 누락되었습니다."
+        return False, "API Key가 설정되지 않았습니다."
         
     prompt_template = load_default_prompt()
     
@@ -139,7 +165,9 @@ def modify_schedule(existing_schedule, modification_request, api_key, model_name
         
         response = model.generate_content(
             full_prompt,
-            generation_config={"temperature": 0.2}
+            generation_config={
+                "temperature": settings["temperature"]
+            }
         )
         
         if not response or not response.text:

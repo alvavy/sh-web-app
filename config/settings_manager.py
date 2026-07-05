@@ -6,14 +6,13 @@ SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
 DEFAULT_SETTINGS = {
     "api_key": "",
-    "selected_model": "gemini-1.5-flash",
-    "available_models": [
-        "gemini-1.5-flash",
-        "gemini-1.5-pro",
-        "gemini-2.5-flash",
-        "gemini-2.5-pro"
-    ]
+    "model": "gemini-3.5-flash",
+    "temperature": 0.7
 }
+AVAILABLE_MODELS = [
+    "gemini-2.5-flash",
+    "gemini-2.5-pro"
+]
 
 def load_settings():
     """settings.json 파일에서 설정을 로드합니다. 파일이 없으면 기본값을 생성하고 저장합니다."""
